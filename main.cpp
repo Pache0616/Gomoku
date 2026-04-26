@@ -7,26 +7,26 @@
 #include <tchar.h>
 #include <string.h>
 
-// --- 常量定义 ---
+//常量
 #define BOARD_SIZE 19
 #define CELL_SIZE 40
 #define MARGIN 60
 #define WIN_SIZE (MARGIN * 2 + (BOARD_SIZE - 1) * CELL_SIZE)
 
-#define INF 200000000       // 无穷大分数
-#define WIN_SCORE 100000    // 赢局底分
+#define INF 200000000       
+#define WIN_SCORE 100000    
 
 #define MIN(a,b) ((a)<(b)?(a):(b))
 #define MAX(a,b) ((a)>(b)?(a):(b))
 
-// --- 数据结构 ---
+//数据结构
 typedef struct {
     int r;
     int c;
     int score;
 } Move;
 
-// --- 全局变量 ---
+//全局变量
 int board[BOARD_SIZE][BOARD_SIZE] = { 0 };
 int s_depth = 4;
 int search_width = 12;
@@ -46,7 +46,7 @@ bool check_win(int r, int c, int p);
 void board_ui();
 void msg_game_over(int is_ai_turn, bool active_player);
 
-// --- 核心逻辑：得分评估 ---
+//得分评估
 int evaluate_tuple(int b[5]) {
     int b_cnt = 0, w_cnt = 0;
     char s[6] = { 0 };
@@ -58,7 +58,6 @@ int evaluate_tuple(int b[5]) {
         else { s[i] = '0'; }
     }
 
-    // 如果既有黑棋又有白棋，或者全空，则为死局/无价值
     if ((b_cnt > 0 && w_cnt > 0) || (b_cnt == 0 && w_cnt == 0)) return 0;
 
     static const char* patterns[31] = {
@@ -75,12 +74,12 @@ int evaluate_tuple(int b[5]) {
         WIN_SCORE, WIN_SCORE, WIN_SCORE, WIN_SCORE, WIN_SCORE, WIN_SCORE * 100
     };
 
-    // 如果是白棋，将字符串中的W替换为B以便共用一套模板
+
     if (w_cnt > 0) {
         for (int i = 0; i < 5; i++) if (s[i] == 'W') s[i] = 'B';
     }
 
-    // 利用 strcmp 大幅简化匹配逻辑
+    //简化匹配逻辑
     for (int i = 0; i < 31; i++) {
         if (strcmp(s, patterns[i]) == 0) {
             return b_cnt > 0 ? scores[i] : -scores[i];
@@ -148,7 +147,7 @@ inline bool has_neighbor(int i, int j) {
     return false;
 }
 
-// qsort 排序比较函数 (降序)
+// qsort
 int compare_moves(const void* a, const void* b) {
     return ((Move*)b)->score - ((Move*)a)->score;
 }
@@ -167,12 +166,11 @@ int get_candidates(Move* moves) {
             }
         }
     }
-    // 使用标准库 qsort 替换原来的插入排序，更简洁
+
     qsort(moves, count, sizeof(Move), compare_moves);
     return count;
 }
 
-// --- 核心逻辑：AI 搜索 ---
 int alpha_beta(int depth, int alpha, int beta, int maximizing, int current_d) {
     int score = evaluate_whole_board(board);
 
