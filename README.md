@@ -1,4 +1,4 @@
-# Gomoku-AI: 基于 Alpha-Beta 剪枝的智能五子棋
+# Gomoku with AI: 基于 Alpha-Beta 剪枝的智能五子棋
 
 ![C++](https://img.shields.io/badge/Language-C++-blue.svg)
 ![EasyX](https://img.shields.io/badge/Library-EasyX-orange.svg)
